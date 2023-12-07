@@ -6,6 +6,8 @@ import (
 	"errors"
 )
 
+// teste
+
 func GetDbConn(ctx context.Context) (*sql.Tx, error) {
 	dbConn, ok := ctx.Value("dbConn").(*sql.DB)
 	if !ok {
