@@ -3,7 +3,7 @@ DB_HOST: localhost
 DB_PORT: 5433
 DB_USER: root
 DB_PASSWORD: root
-DB_NAME: fullcycle
+DB_NAME: campus-connect-api
 WEB_SERVER_PORT: "8000"
 JWT_SECRET: secret
 JWT_EXPERESIN: 300
