@@ -14,7 +14,7 @@ import (
 
 func main() {
 	// lendo as configurações
-	cfg, err := configs.LoadConfigs("./cmd/server/app.yaml")
+	cfg, err := configs.LoadConfigs("configs/app.yaml")
 	if err != nil {
 		panic(err)
 	}

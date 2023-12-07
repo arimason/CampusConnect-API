@@ -20,23 +20,23 @@ type Config struct {
 	User     string
 	Password string
 	Name     string
+	Schema   string
 }
 
 func (c *Conn) InitConn(cfg *Config) {
-	// criando os parâmetros para conexão com o postgres
-	dbURL := &url.URL{
+	// // criando os parâmetros para conexão com o postgres
+	pgurl := &url.URL{
 		Scheme: "postgres",
 		User:   url.UserPassword(cfg.User, cfg.Password),
 		Host:   fmt.Sprintf("%s:%d", cfg.Host, cfg.Port),
-		Path:   cfg.Name,
+		Path:   fmt.Sprintf("/%s", cfg.Name),
 	}
 	// sslmode disable
-	q := dbURL.Query()
+	q := pgurl.Query()
 	q.Add("sslmode", "disable")
-	dbURL.RawQuery = q.Encode()
+	pgurl.RawQuery = q.Encode()
 	// iniciando conexão com o postgres
-	conn := dbURL.String()
-	db, err := sql.Open(cfg.Driver, conn)
+	db, err := sql.Open(cfg.Driver, pgurl.String())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -49,4 +49,5 @@ func (c *Conn) InitConn(cfg *Config) {
 	c.DBConn = db
 	// sucess
 	log.Println("Conexão com o PostgreSQL estabelecidade com sucesso!")
+	// return db
 }
