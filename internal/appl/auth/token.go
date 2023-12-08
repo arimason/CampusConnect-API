@@ -1,6 +1,7 @@
 package authappl
 
 import (
+	"campusconnect-api/configs"
 	"context"
 	"errors"
 	"time"
@@ -8,11 +9,19 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func createToken(id, secret string) (string, error) {
+type jwtToken struct {
+	UserID     string
+	Email      string
+	Expiration time.Time
+}
+
+func createToken(id, email, secret string) (string, error) {
 	// geração do token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": id,
 		"exp":     time.Now().Add(24 * time.Hour).Unix(),
+		"email":   email,
+		// "exp":   time.Now().Add(300 * time.Second).Unix(),
 	})
 	// assina o token com a secret
 	jwt, err := token.SignedString([]byte(secret))
@@ -23,14 +32,19 @@ func createToken(id, secret string) (string, error) {
 	return jwt, nil
 }
 
-func verifierToken(ctx context.Context, secret string) (*jwt.Token, error) {
+func verifierToken(ctx context.Context) (*jwt.Token, error) {
+	// obtendo configs
+	cfg, err := configs.LoadConfigs("./configs/app.yaml")
+	if err != nil {
+		return nil, errors.New("erro ao obter configs")
+	}
 	token := ctx.Value("JWT")
 	// verifica a assinatura do token
 	tk, err := jwt.Parse(token.(string), func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("assinatura do token inválida!")
 		}
-		return secret, nil
+		return []byte(cfg.JWTSecret), nil
 	})
 	if err != nil {
 		return nil, err
@@ -44,4 +58,17 @@ func verifierToken(ctx context.Context, secret string) (*jwt.Token, error) {
 		}
 	}
 	return tk, nil
+}
+
+func tokenValues(ctx context.Context) (*jwtToken, error) {
+	tk, err := verifierToken(ctx)
+	if err != nil {
+		return nil, err
+	}
+	claims := tk.Claims.(jwt.MapClaims)
+	token := &jwtToken{
+		UserID: claims["user_id"].(string),
+		Email:  claims["email"].(string),
+	}
+	return token, nil
 }

@@ -45,5 +45,5 @@ func Routes(r *mux.Router, db *sql.DB) {
 	r.Use(ws.prepareHttpWithContext)
 	// criando endpoints
 	r.HandleFunc("/user", resource.CreateAuthHandler).Methods(http.MethodPost)
-	r.HandleFunc("/user/{email}", resource.FindByEmailHandler).Methods(http.MethodGet)
+	r.HandleFunc("/user", resource.FindByEmailHandler).Methods(http.MethodGet)
 }

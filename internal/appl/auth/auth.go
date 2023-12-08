@@ -8,7 +8,6 @@ import (
 	"campusconnect-api/pkg/utils"
 	"context"
 	"errors"
-	"fmt"
 )
 
 type authApplicationImpl struct {
@@ -52,21 +51,27 @@ func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
 		return "", err
 	}
 	// gerando token
-	token, err := createToken(string(ent.ID), cfg.JWTSecret)
+	token, err := createToken(string(ent.ID), e.Email, cfg.JWTSecret)
 	if err != nil {
 		return "", err
 	}
 	return token, nil
 }
 
-func (s *authApplicationImpl) FindByEmail(email string) (*auth.Entity, error) {
+func (s *authApplicationImpl) FindByEmail() (*auth.Entity, error) {
 	// obtendo transação
 	tx, err := contxt.GetDbConn(s.ctx)
 	if err != nil {
 		return nil, err
 	}
+	// validando token
+	tk, err := tokenValues(s.ctx)
+	if err != nil {
+		return nil, err
+	}
+	// importando repositorio
 	rep := authrep.NewAuthRepository(tx)
-	ent, err := rep.FindByEmail(email)
+	ent, err := rep.FindByEmail(tk.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -74,15 +79,11 @@ func (s *authApplicationImpl) FindByEmail(email string) (*auth.Entity, error) {
 }
 
 func (s *authApplicationImpl) UpdatePassword(password string) (string, error) {
-	cfg, err := configs.LoadConfigs("./configs/app.yaml")
-	if err != nil {
-		return "", errors.New("erro ao obter configs")
-	}
-	tk, err := verifierToken(s.ctx, cfg.JWTSecret)
+	// validando token
+	_, err := tokenValues(s.ctx)
 	if err != nil {
 		return "", err
 	}
-	fmt.Println(">>", tk)
 	return "", nil
 }
 

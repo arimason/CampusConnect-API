@@ -5,8 +5,6 @@ import (
 	"campusconnect-api/internal/domain/auth"
 	"encoding/json"
 	"net/http"
-
-	"github.com/gorilla/mux"
 )
 
 type createAuthReq struct {
@@ -65,7 +63,6 @@ func CreateAuthHandler(w http.ResponseWriter, r *http.Request) {
 //==========================================================================================================================
 
 type findByEmailReq struct {
-	Email string `json:"-"`
 }
 
 type findByEmailResp struct {
@@ -74,22 +71,9 @@ type findByEmailResp struct {
 	Email string `json:"email"`
 }
 
-func decodeFindByEmail(r *http.Request) (*findByEmailReq, error) {
-	vars := mux.Vars(r)
-	dto := &findByEmailReq{
-		Email: vars["email"],
-	}
-	return dto, nil
-}
-
 func FindByEmailHandler(w http.ResponseWriter, r *http.Request) {
-	req, err := decodeFindByEmail(r)
-	if err != nil {
-		responseError(w, http.StatusBadRequest, ErrFind, err.Error())
-		return
-	}
 	appl := authappl.NewAuthApplication(r.Context())
-	ent, err := appl.FindByEmail(req.Email)
+	ent, err := appl.FindByEmail()
 	if err != nil {
 		responseError(w, http.StatusBadRequest, ErrFind, err.Error())
 		return
