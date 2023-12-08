@@ -82,6 +82,10 @@ func (r *authRepositoryImpl) FindByEmail(email string) (*auth.Entity, error) {
 	row := r.Tx.QueryRow(sqlStmt, email)
 	// atribuindo os valores obtidos do banco de dados para a minha entidade
 	ent, err := r.scan(row)
+	// entidade não encontrada
+	if err == sql.ErrNoRows {
+		return nil, ErrFindByEmailNotFound
+	}
 	// garantido que em caso de erro seja feito o rollback
 	if err != nil {
 		r.Tx.Rollback()

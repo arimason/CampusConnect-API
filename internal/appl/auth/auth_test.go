@@ -2,6 +2,7 @@ package authappl
 
 import (
 	"campusconnect-api/internal/domain/auth"
+	"campusconnect-api/pkg/utils"
 	"context"
 	"testing"
 
@@ -87,10 +88,7 @@ func Test_userApplicationImpl_validatePassword(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := &authApplicationImpl{
-				ctx: tt.fields.ctx,
-			}
-			if err := s.validatePassword(tt.args.hashPassword, tt.args.password); (err != nil) != tt.wantErr {
+			if err := utils.ValidateHash(tt.args.hashPassword, tt.args.password); (err != nil) != tt.wantErr {
 				t.Errorf("userApplicationImpl.validatePassword() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

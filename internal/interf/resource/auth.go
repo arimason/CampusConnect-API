@@ -16,7 +16,7 @@ type createAuthReq struct {
 }
 
 type createAuthResp struct {
-	ID string `json:"id"`
+	JWT string `json:"token"`
 }
 
 func decodeCreateAuth(r *http.Request) (*createAuthReq, error) {
@@ -43,13 +43,13 @@ func CreateAuthHandler(w http.ResponseWriter, r *http.Request) {
 		Email:    req.Email,
 		Password: req.Password,
 	}
-	id, err := appl.Create(ent)
+	token, err := appl.Create(ent)
 	if err != nil {
 		responseError(w, http.StatusBadRequest, ErrCreateEnt, err.Error())
 		return
 	}
 	resp := &createAuthResp{
-		ID: id,
+		JWT: token,
 	}
 	// definindo tipo do conteúdo
 	w.Header().Set("Content-Type", "application/json")

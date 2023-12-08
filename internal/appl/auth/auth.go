@@ -1,24 +1,25 @@
 package authappl
 
 import (
+	"campusconnect-api/configs"
 	"campusconnect-api/internal/domain/auth"
 	authrep "campusconnect-api/internal/infra/auth"
 	contxt "campusconnect-api/internal/infra/context"
 	"campusconnect-api/pkg/utils"
 	"context"
-
-	"golang.org/x/crypto/bcrypt"
+	"errors"
 )
 
 type authApplicationImpl struct {
 	ctx context.Context
 }
 
-func (s *authApplicationImpl) validatePassword(hashPassword, password string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hashPassword), []byte(password))
-}
-
 func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
+	// obtendo configuração
+	cfg, err := configs.LoadConfigs("./configs/app.yaml")
+	if err != nil {
+		return "", err
+	}
 	// iniciando transação
 	tx, err := contxt.GetDbConn(s.ctx)
 	if err != nil {
@@ -27,7 +28,14 @@ func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
 	// importando métodos do repositório
 	rep := authrep.NewAuthRepository(tx)
 	// geração de hash a partir da senha
-	hash, err := bcrypt.GenerateFromPassword([]byte(e.Password), bcrypt.DefaultCost)
+	hash, err := utils.GenerateHash(e.Password)
+	if err != nil {
+		return "", err
+	}
+	_, err = s.FindByEmail(e.Email)
+	if err == authrep.ErrFindByEmailNotFound {
+		return "", errors.New("email já existe")
+	}
 	if err != nil {
 		return "", err
 	}
@@ -35,14 +43,19 @@ func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
 		ID:       utils.NewIdentity(),
 		Name:     e.Name,
 		Email:    e.Email,
-		Password: string(hash),
+		Password: hash,
 	}
 	// inserindo entidade no data base
 	err = rep.Create(ent)
 	if err != nil {
 		return "", err
 	}
-	return string(ent.ID), nil
+	// gerando token
+	token, err := createToken(string(ent.ID), cfg.JWTSecret)
+	if err != nil {
+		return "", err
+	}
+	return token, nil
 }
 
 func (s *authApplicationImpl) FindByEmail(email string) (*auth.Entity, error) {
