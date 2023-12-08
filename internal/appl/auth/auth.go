@@ -8,6 +8,7 @@ import (
 	"campusconnect-api/pkg/utils"
 	"context"
 	"errors"
+	"fmt"
 )
 
 type authApplicationImpl struct {
@@ -18,7 +19,7 @@ func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
 	// obtendo configuração
 	cfg, err := configs.LoadConfigs("./configs/app.yaml")
 	if err != nil {
-		return "", err
+		return "", errors.New("erro ao obter configs")
 	}
 	// iniciando transação
 	tx, err := contxt.GetDbConn(s.ctx)
@@ -70,6 +71,19 @@ func (s *authApplicationImpl) FindByEmail(email string) (*auth.Entity, error) {
 		return nil, err
 	}
 	return ent, nil
+}
+
+func (s *authApplicationImpl) UpdatePassword(password string) (string, error) {
+	cfg, err := configs.LoadConfigs("./configs/app.yaml")
+	if err != nil {
+		return "", errors.New("erro ao obter configs")
+	}
+	tk, err := verifierToken(s.ctx, cfg.JWTSecret)
+	if err != nil {
+		return "", err
+	}
+	fmt.Println(">>", tk)
+	return "", nil
 }
 
 func NewAuthApplication(ctx context.Context) auth.Service {
