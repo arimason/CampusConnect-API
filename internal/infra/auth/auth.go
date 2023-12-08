@@ -60,7 +60,7 @@ func (r *authRepositoryImpl) create(e *auth.Entity) error {
 	return nil
 }
 
-func (r *authRepositoryImpl) findByEmail(email string) (*auth.Entity, error) {
+func (r *authRepositoryImpl) findByEmailOrName(emailOrName string) (*auth.Entity, error) {
 	// sql para consulta no banco de dados
 	sqlStmt := `
 	select
@@ -72,7 +72,7 @@ func (r *authRepositoryImpl) findByEmail(email string) (*auth.Entity, error) {
 	where email = $1
 	`
 	// realizando consulta
-	row := r.Tx.QueryRow(sqlStmt, email)
+	row := r.Tx.QueryRow(sqlStmt, emailOrName)
 	// atribuindo os valores obtidos do banco de dados para a minha entidade
 	ent, err := r.scan(row)
 	// entidade não encontrada
@@ -95,8 +95,8 @@ func (r *authRepositoryImpl) Create(e *auth.Entity) error {
 	return nil
 }
 
-func (r *authRepositoryImpl) FindByEmail(email string) (*auth.Entity, error) {
-	ent, err := r.findByEmail(email)
+func (r *authRepositoryImpl) FindByEmailOrName(emailOrName string) (*auth.Entity, error) {
+	ent, err := r.findByEmailOrName(emailOrName)
 	if err != nil && err != ErrFindByEmailNotFound {
 		r.Tx.Rollback()
 		return nil, err

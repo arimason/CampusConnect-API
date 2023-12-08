@@ -9,10 +9,12 @@ import (
 	"errors"
 )
 
+// estrutura me garante que eu terei simetria com os métodos necessário e expressado na interface Service referente a entidade auth
 type authApplicationImpl struct {
 	ctx context.Context
 }
 
+// Cria um novo usuário e retorna o token gerado após a criação desse novo usuário, não sendo necessário o cliente passsar por um login
 func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
 	// iniciando transação
 	tx, err := contxt.GetDbConn(s.ctx)
@@ -21,7 +23,7 @@ func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
 	}
 	// importando métodos do repositório
 	rep := authrep.NewAuthRepository(tx)
-
+	// verificando se o email já existe, de acordo com o dados do banco
 	findEnt, err := rep.FindByEmail(e.Email)
 	if err != nil && err != authrep.ErrFindByEmailNotFound {
 		return "", err
@@ -34,6 +36,7 @@ func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	// atribuindo valor a entidade
 	ent := &auth.Entity{
 		ID:         utils.NewIdentity(),
 		Name:       e.Name,
@@ -57,9 +60,28 @@ func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
 		tx.Rollback()
 		return "", err
 	}
+	// sucesso
 	return token, nil
 }
 
+// Realizo o login, recebendo email, ou username e uma senha, dados esses que serão validados
+func (s *authApplicationImpl) Login(emailOrName, password string) (string, error) {
+	// obtendo transação
+	tx, err := contxt.GetDbConn(s.ctx)
+	if err != nil {
+		return nil, err
+	}
+	// importando repositorio
+	rep := authrep.NewAuthRepository(tx)
+	// verifico se a senha está correta
+	// realizo a verificação dos dados para aprovar o login
+	err := rep.Login(emailOrName, password)
+	if err != nil {
+		return "", err
+	}
+}
+
+// Busca os dados do usuário de acordo com o email dentro do token
 func (s *authApplicationImpl) FindByEmail() (*auth.Entity, error) {
 	// obtendo transação
 	tx, err := contxt.GetDbConn(s.ctx)
@@ -73,7 +95,8 @@ func (s *authApplicationImpl) FindByEmail() (*auth.Entity, error) {
 	}
 	// importando repositorio
 	rep := authrep.NewAuthRepository(tx)
-	ent, err := rep.FindByEmail(tk.Email)
+	// realizando consulta no banco de dados
+	ent, err := rep.FindByEmailOrName(tk.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -83,6 +106,7 @@ func (s *authApplicationImpl) FindByEmail() (*auth.Entity, error) {
 		tx.Rollback()
 		return nil, err
 	}
+	// sucesso
 	return ent, nil
 }
 
