@@ -62,9 +62,6 @@ func CreateAuthHandler(w http.ResponseWriter, r *http.Request) {
 // Find By Email
 //==========================================================================================================================
 
-type findByEmailReq struct {
-}
-
 type findByEmailResp struct {
 	ID    string `json:"id"`
 	Name  string `json:"name"`

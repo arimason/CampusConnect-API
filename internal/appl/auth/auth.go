@@ -1,7 +1,6 @@
 package authappl
 
 import (
-	"campusconnect-api/configs"
 	"campusconnect-api/internal/domain/auth"
 	authrep "campusconnect-api/internal/infra/auth"
 	contxt "campusconnect-api/internal/infra/context"
@@ -15,11 +14,6 @@ type authApplicationImpl struct {
 }
 
 func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
-	// obtendo configuração
-	cfg, err := configs.LoadConfigs("./configs/app.yaml")
-	if err != nil {
-		return "", errors.New("erro ao obter configs")
-	}
 	// iniciando transação
 	tx, err := contxt.GetDbConn(s.ctx)
 	if err != nil {
@@ -27,11 +21,7 @@ func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
 	}
 	// importando métodos do repositório
 	rep := authrep.NewAuthRepository(tx)
-	// geração de hash a partir da senha
-	hash, err := utils.GenerateHash(e.Password)
-	if err != nil {
-		return "", err
-	}
+
 	findEnt, err := rep.FindByEmail(e.Email)
 	if err != nil && err != authrep.ErrFindByEmailNotFound {
 		return "", err
@@ -39,11 +29,17 @@ func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
 	if findEnt != nil {
 		return "", errors.New("email já existe")
 	}
+	// geração de hash a partir da senha
+	hash, err := utils.GenerateHash(e.Password)
+	if err != nil {
+		return "", err
+	}
 	ent := &auth.Entity{
-		ID:       utils.NewIdentity(),
-		Name:     e.Name,
-		Email:    e.Email,
-		Password: hash,
+		ID:         utils.NewIdentity(),
+		Name:       e.Name,
+		Email:      e.Email,
+		Password:   hash,
+		Permission: e.Permission,
 	}
 	// inserindo entidade no data base
 	err = rep.Create(ent)
@@ -51,7 +47,7 @@ func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
 		return "", err
 	}
 	// gerando token
-	token, err := createToken(string(ent.ID), e.Email, cfg.JWTSecret)
+	token, err := createToken(string(ent.ID), e.Email, string(e.Permission))
 	if err != nil {
 		return "", err
 	}

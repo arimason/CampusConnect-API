@@ -12,19 +12,25 @@ import (
 type jwtToken struct {
 	UserID     string
 	Email      string
+	Permission string
 	Expiration time.Time
 }
 
-func createToken(id, email, secret string) (string, error) {
+func createToken(id, email, permission string) (string, error) {
+	// obtendo configuração
+	cfg, err := configs.LoadConfigs("./configs/app.yaml")
+	if err != nil {
+		return "", errors.New("erro ao obter configs")
+	}
 	// geração do token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user_id": id,
-		"exp":     time.Now().Add(24 * time.Hour).Unix(),
-		"email":   email,
-		// "exp":   time.Now().Add(300 * time.Second).Unix(),
+		"user_id":    id,
+		"email":      email,
+		"permission": permission,
+		"exp":        time.Now().Add(24 * time.Hour).Unix(),
 	})
 	// assina o token com a secret
-	jwt, err := token.SignedString([]byte(secret))
+	jwt, err := token.SignedString([]byte(cfg.JWTSecret))
 	if err != nil {
 		return "", err
 	}
@@ -67,8 +73,9 @@ func tokenValues(ctx context.Context) (*jwtToken, error) {
 	}
 	claims := tk.Claims.(jwt.MapClaims)
 	token := &jwtToken{
-		UserID: claims["user_id"].(string),
-		Email:  claims["email"].(string),
+		UserID:     claims["user_id"].(string),
+		Email:      claims["email"].(string),
+		Permission: claims["permission"].(string),
 	}
 	return token, nil
 }
