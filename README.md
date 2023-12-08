@@ -24,7 +24,7 @@ O corpo da requisição deve ser um objeto JSON contendo as seguintes informaç�
 }
 ```
 
-##### Request Body
+##### Response Body
 
 O corpo de resposta deve conter:
 
