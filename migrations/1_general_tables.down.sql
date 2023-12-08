@@ -7,9 +7,6 @@ DROP TABLE IF EXISTS tb_article;
 -- Reverter a criação da tabela de eventos
 DROP TABLE IF EXISTS tb_event;
 
--- Reverter a criação da tabela de papéis
-DROP TABLE IF EXISTS tb_user_role;
-
 -- Reverter a criação da tabela de informações pessoais
 DROP TABLE IF EXISTS tb_person;
 

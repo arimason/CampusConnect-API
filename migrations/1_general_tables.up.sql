@@ -1,7 +1,8 @@
 -- Tabela de usuário
 CREATE TABLE tb_user (
     id VARCHAR(36) NOT NULL,
-    name VARCHAR(50) NOT NULL,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(100) NOT NULL,
     permission VARCHAR(20) NOT NULL, -- Pode ser 'admin', 'professor' ou 'aluno'
     created_at TIMESTAMP NOT NULL DEFAULT now(),
