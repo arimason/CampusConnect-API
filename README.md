@@ -33,3 +33,28 @@ O corpo de resposta deve conter:
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
 }
 ```
+
+#### Buscar dados do usuário
+
+Endpoint para buscar dados de um usuário.
+
+- **Método:** GET
+- **Path:** `/priv/user`
+
+##### Request HEADER
+
+O HEADER deve conter o token:
+
+`Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c`
+
+##### Request Body
+
+O corpo de resposta em JSON:
+
+```json
+{
+"name": "Nome do Usuário",
+"email": "usuario@example.com",
+"password": "senha_do_usuario"
+}
+```
