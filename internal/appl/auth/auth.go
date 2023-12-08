@@ -24,7 +24,7 @@ func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
 	// importando métodos do repositório
 	rep := authrep.NewAuthRepository(tx)
 	// verificando se o email já existe, de acordo com o dados do banco
-	findEnt, err := rep.FindByEmail(e.Email)
+	findEnt, err := rep.FindByEmailOrName(e.Email)
 	if err != nil && err != authrep.ErrFindByEmailNotFound {
 		return "", err
 	}
@@ -69,16 +69,28 @@ func (s *authApplicationImpl) Login(emailOrName, password string) (string, error
 	// obtendo transação
 	tx, err := contxt.GetDbConn(s.ctx)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	// importando repositorio
 	rep := authrep.NewAuthRepository(tx)
-	// verifico se a senha está correta
-	// realizo a verificação dos dados para aprovar o login
-	err := rep.Login(emailOrName, password)
+	// realizo consulta no banco para comparar se os dados fornecidos para login são válidos
+	ent, err := rep.FindByEmailOrName(emailOrName)
+	// caso a consulta retorne vazio, ou seja, não possui esse usuário no banco, retorna um erro
 	if err != nil {
 		return "", err
 	}
+	// verifico se a senha é válida
+	err = utils.ValidateHash(ent.Password, password)
+	if err != nil {
+		return "", errors.New("senha inválida")
+	}
+	// geração do token após a confrimação dos dados
+	token, err := createToken(string(ent.ID), ent.Email, string(ent.Permission))
+	if err != nil {
+		return "", err
+	}
+	// sucesso
+	return token, nil
 }
 
 // Busca os dados do usuário de acordo com o email dentro do token

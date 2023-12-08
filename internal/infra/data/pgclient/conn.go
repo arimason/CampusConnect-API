@@ -9,10 +9,12 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// estrutura com conexão com o banco
 type Conn struct {
 	DBConn *sql.DB
 }
 
+// configuraçẽs para realizar comunicações com o banco
 type Config struct {
 	Driver   string
 	Host     string
@@ -23,6 +25,7 @@ type Config struct {
 	Schema   string
 }
 
+// inicializo a comunicação com o banco de dados
 func (c *Conn) InitConn(cfg *Config) {
 	// // criando os parâmetros para conexão com o postgres
 	pgurl := &url.URL{
@@ -49,5 +52,4 @@ func (c *Conn) InitConn(cfg *Config) {
 	c.DBConn = db
 	// sucess
 	log.Println("Conexão com o PostgreSQL estabelecidade com sucesso!")
-	// return db
 }

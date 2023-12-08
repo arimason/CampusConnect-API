@@ -14,6 +14,7 @@ import (
 	_ "github.com/golang-migrate/migrate/source/file"
 )
 
+// captura o erro do panic e retorna juntamente com uma mensagem
 func errControl() {
 	if r := recover(); r != nil {
 		e := r.(error)
@@ -21,6 +22,7 @@ func errControl() {
 	}
 }
 
+// realiza a conversão do comando para o que está ocorrendo, para ser exibido no terminal
 func cmdName(order int) string {
 	switch order {
 	case 0:
@@ -81,16 +83,19 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	//
+	// obteno a versão e verifico de acordo com o banco de dados e o migrations se o banco estar ou não "ditry"
 	v, d, err := m.Version()
 	if err != nil && !errors.Is(err, migrate.ErrNilVersion) {
 		panic(err)
 	}
+	// informo a versão
 	log.Printf("Current version: %d", v)
+	// informo se o banco estar "dirty"
 	log.Printf("Dirty: %t", d)
 	// migration of commands
 	log.Printf("Executing command: %s", cmdName(migrateCmd))
 	err = nil
+	// realizo de fato a operação com o migration de acordo com meu comando das flags
 	if migrateCmd == 0 {
 		log.Printf("Up to all")
 		err = m.Up()

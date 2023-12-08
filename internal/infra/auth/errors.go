@@ -3,5 +3,5 @@ package authrep
 import "errors"
 
 var (
-	ErrFindByEmailNotFound = errors.New("entidade não encontrada por email")
+	ErrFindByEmailNotFound = errors.New("usuário não encontrado")
 )
