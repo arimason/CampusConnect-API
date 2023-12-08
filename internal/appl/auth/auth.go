@@ -55,6 +55,12 @@ func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	// commit da transação
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return "", err
+	}
 	return token, nil
 }
 

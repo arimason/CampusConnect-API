@@ -42,7 +42,7 @@ func (r *authRepositoryImpl) scan(row *sql.Row) (*auth.Entity, error) {
 	return ent, nil
 }
 
-func (r *authRepositoryImpl) Create(e *auth.Entity) error {
+func (r *authRepositoryImpl) create(e *auth.Entity) error {
 	// prepara o sql e o valores para serem utilizados na instrução do banco
 	sqlStmt := `
 	insert into tb_user(
@@ -54,20 +54,13 @@ func (r *authRepositoryImpl) Create(e *auth.Entity) error {
 	`
 	_, err := r.Tx.Exec(sqlStmt, e.ID, e.Name, e.Email, e.Password)
 	if err != nil {
-		// caso ocorra algum erro, realiza-se o rollback
-		r.Tx.Rollback() // o rollback garante que eu consigo desfazer as alterações feitas no banco em caso de erro
 		return fmt.Errorf("falha ao executar SQL: %w", err)
-	}
-	err = r.Tx.Commit()
-	if err != nil {
-		r.Tx.Rollback()
-		return fmt.Errorf("falha ao executar commit da transação: %w", err)
 	}
 	// sucesso
 	return nil
 }
 
-func (r *authRepositoryImpl) FindByEmail(email string) (*auth.Entity, error) {
+func (r *authRepositoryImpl) findByEmail(email string) (*auth.Entity, error) {
 	// sql para consulta no banco de dados
 	sqlStmt := `
 	select
@@ -86,18 +79,28 @@ func (r *authRepositoryImpl) FindByEmail(email string) (*auth.Entity, error) {
 	if err == sql.ErrNoRows {
 		return nil, ErrFindByEmailNotFound
 	}
-	// garantido que em caso de erro seja feito o rollback
 	if err != nil {
-		r.Tx.Rollback()
-		return nil, err
-	}
-	// realizo o commit encerrando a transação em caso de sucesso
-	err = r.Tx.Commit()
-	if err != nil {
-		r.Tx.Rollback()
 		return nil, err
 	}
 	// sucesso
+	return ent, nil
+}
+
+func (r *authRepositoryImpl) Create(e *auth.Entity) error {
+	err := r.create(e)
+	if err != nil {
+		r.Tx.Rollback()
+		return err
+	}
+	return nil
+}
+
+func (r *authRepositoryImpl) FindByEmail(email string) (*auth.Entity, error) {
+	ent, err := r.findByEmail(email)
+	if err != nil && err != ErrFindByEmailNotFound {
+		r.Tx.Rollback()
+		return nil, err
+	}
 	return ent, nil
 }
 
