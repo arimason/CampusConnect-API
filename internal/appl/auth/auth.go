@@ -33,12 +33,12 @@ func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	_, err = s.FindByEmail(e.Email)
-	if err == authrep.ErrFindByEmailNotFound {
-		return "", errors.New("email já existe")
-	}
-	if err != nil {
+	findEnt, err := rep.FindByEmail(e.Email)
+	if err != nil && err != authrep.ErrFindByEmailNotFound {
 		return "", err
+	}
+	if findEnt != nil {
+		return "", errors.New("email já existe")
 	}
 	ent := &auth.Entity{
 		ID:       utils.NewIdentity(),
