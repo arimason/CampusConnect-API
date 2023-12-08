@@ -81,6 +81,12 @@ func (s *authApplicationImpl) FindByEmail() (*auth.Entity, error) {
 	if err != nil {
 		return nil, err
 	}
+	// commit da transação
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
 	return ent, nil
 }
 
