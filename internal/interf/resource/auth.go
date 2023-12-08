@@ -46,6 +46,7 @@ func CreateAuthHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := appl.Create(ent)
 	if err != nil {
 		responseError(w, http.StatusBadRequest, ErrCreateEnt, err.Error())
+		return
 	}
 	resp := &createAuthResp{
 		ID: id,

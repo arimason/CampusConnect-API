@@ -6,8 +6,7 @@ import (
 	"errors"
 )
 
-// teste
-
+// a partir do contexto eu obtenho a conexão com o banco e gero uma transação
 func GetDbConn(ctx context.Context) (*sql.Tx, error) {
 	dbConn, ok := ctx.Value("dbConn").(*sql.DB)
 	if !ok {
