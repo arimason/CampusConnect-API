@@ -34,8 +34,8 @@ func main() {
 	ws.Routes(router, db.DBConn)
 	// criando servidor
 	port := "18080"
-	// path := "localhost"
-	path := "0.0.0.0"
+	path := "localhost"
+	// path := "0.0.0.0"
 	url := fmt.Sprintf("%s:%s", path, port)
 	// iniciando servidor
 	log.Printf("Servidor inicializado  http://%s...\n", url)
