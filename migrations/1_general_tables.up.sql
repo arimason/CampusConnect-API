@@ -17,7 +17,6 @@ CREATE TABLE tb_person (
     user_id VARCHAR(36) UNIQUE NOT NULL,
     first_name VARCHAR(50),
     last_name VARCHAR(50),
-    email VARCHAR(100) UNIQUE,
     created_at TIMESTAMP NOT NULL DEFAULT now(),
     updated_at TIMESTAMP,
     deleted_at TIMESTAMP,
