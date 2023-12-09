@@ -41,6 +41,31 @@ O corpo de resposta deve conter:
 }
 ```
 
+### 1-2. [POST]/{PUBLIC_BASE}/user/login
+
+Endpoint para realizar login.
+
+#### - _Request_:
+
+O corpo da requisição deve ser um objeto JSON contendo as seguintes informações:
+
+```json
+{
+"emailOrName": "usuario@example.com",
+"password": "senha_do_usuario"
+}
+```
+
+#### - _Response_:
+
+O corpo de resposta deve conter:
+
+```json
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+}
+```
+
 ### 1-3. [GET]/{PRIVATE_BASE}/user
 
 Endpoint para buscar dados de um usuário.
