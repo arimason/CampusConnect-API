@@ -4,6 +4,9 @@ DROP TABLE IF EXISTS tb_document;
 -- Tabela de comentários
 DROP TABLE IF EXISTS tb_comment;
 
+-- Tabela de inscrição dos alunos em eventos
+DROP TABLE IF EXISTS tb_register_event;
+
 -- Tabela de Relacionamento entre Cursos, Artigos e Eventos
 DROP TABLE IF EXISTS tb_course_content;
 

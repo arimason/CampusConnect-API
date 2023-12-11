@@ -8,15 +8,17 @@ type Kind string
 // criação constantes do tipo Kind atribuindo valores de permissão
 const (
 	Admin   Kind = "admin"
-	Teacher Kind = "professor"
-	Student Kind = "aluno"
+	Teacher Kind = "teacher"
+	Student Kind = "student"
+	Owner   Kind = "owner"
 )
 
 // criação mapa Permission para obter o dado do tipo Kind de acordo com uma string
 var Permission map[string]Kind = map[string]Kind{
-	"admin":     Admin,
-	"professor": Teacher,
-	"aluno":     Student,
+	"admin":   Admin,
+	"teacher": Teacher,
+	"student": Student,
+	"owner":   Owner,
 }
 
 type Entity struct {

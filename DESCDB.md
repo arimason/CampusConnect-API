@@ -39,28 +39,28 @@ Armazena informações pessoais vinculadas aos usuários.
 | Coluna        | Tipo             | Descrição                                           |
 | ------------- | ---------------- | --------------------------------------------------- |
 | id            | VARCHAR(36)      | Identificador único das informações pessoais        |
-| user_id       | VARCHAR(36)      | Identificador único do usuário vinculado            |
+| person_id       | VARCHAR(36)      | Identificador único da pessoa vinculado            |
 | course_id     | VARCHAR(36)      | Identificador único do curso vinculado              |
-| first_name    | VARCHAR(50)      | Primeiro nome do usuário                            |
-| last_name     | VARCHAR(50)      | Sobrenome do usuário                                |
+| first_name    | VARCHAR(50)      | Primeiro nome do pessoa                            |
+| last_name     | VARCHAR(50)      | Sobrenome do pessoa                                |
 | created_at    | TIMESTAMP         | Data e hora de criação das informações pessoais     |
 | updated_at    | TIMESTAMP         | Data e hora da última atualização                   |
 | deleted_at    | TIMESTAMP         | Data e hora da exclusão (marcada)                   |
 
 *Restrições de chave estrangeira:*
-- `fk_tb_person_user`: Referencia `tb_user` através de `user_id`.
+- `fk_tb_person_person`: Referencia `tb_person` através de `person_id`.
 - `fk_tb_person_course`: Referencia `tb_course` através de `course_id`.
 
 ---
 
 ## Tabela `tb_event`
 
-Armazena informações sobre eventos criados pelos usuários.
+Armazena informações sobre eventos criados.
 
 | Coluna        | Tipo             | Descrição                                           |
 | ------------- | ---------------- | --------------------------------------------------- |
 | id            | VARCHAR(36)      | Identificador único do evento                       |
-| user_id       | VARCHAR(36)      | Identificador único do usuário criador do evento     |
+| person_id       | VARCHAR(36)      | Identificador único da pessoa criador do evento     |
 | title         | VARCHAR(100)     | Título do evento                                    |
 | content       | TEXT             | Conteúdo do evento                                  |
 | visibility    | visibility_type  | Visibilidade do evento ('pub', 'priv')              |
@@ -69,7 +69,7 @@ Armazena informações sobre eventos criados pelos usuários.
 | deleted_at    | TIMESTAMP         | Data e hora da exclusão (marcada)                   |
 
 *Restrição de chave estrangeira:*
-- `fk_tb_event_user`: Referencia `tb_user` através de `user_id`.
+- `fk_tb_event_person`: Referencia `tb_person` através de `person_id`.
 
 ---
 
@@ -80,7 +80,7 @@ Armazena informações sobre artigos criados pelos usuários.
 | Coluna        | Tipo             | Descrição                                           |
 | ------------- | ---------------- | --------------------------------------------------- |
 | id            | VARCHAR(36)      | Identificador único do artigo                       |
-| user_id       | VARCHAR(36)      | Identificador único do usuário criador do artigo     |
+| person_id       | VARCHAR(36)      | Identificador único da pessoa criador do artigo     |
 | title         | VARCHAR(100)     | Título do artigo                                    |
 | content       | TEXT             | Conteúdo do artigo                                  |
 | created_at    | TIMESTAMP         | Data e hora de criação do artigo                    |
@@ -88,7 +88,7 @@ Armazena informações sobre artigos criados pelos usuários.
 | deleted_at    | TIMESTAMP         | Data e hora da exclusão (marcada)                   |
 
 *Restrição de chave estrangeira:*
-- `fk_tb_article_user`: Referencia `tb_user` através de `user_id`.
+- `fk_tb_article_person`: Referencia `tb_person` através de `person_id`.
 
 ---
 
@@ -101,11 +101,32 @@ Estabelece relações entre cursos, artigos e eventos.
 | course_id     | VARCHAR(36)      | Identificador único do curso vinculado              |
 | content_id    | VARCHAR(36)      | Identificador único do artigo ou evento vinculado   |
 | content_type  | content_type      | Tipo de conteúdo ('article' ou 'event')             |
+| created_at    | TIMESTAMP         | Data e hora de criação do comentário                |
+| updated_at    | TIMESTAMP         | Data e hora da última atualização                   |
+| deleted_at    | TIMESTAMP         | Data e hora da exclusão (marcada)                   |
 
 *Restrições de chave estrangeira:*
 - `fk_tb_course_content_course`: Referencia `tb_course` através de `course_id`.
 - `fk_tb_course_content_article`: Referencia `tb_article` através de `content_id` com verificação adiada.
 - `fk_tb_course_content_event`: Referencia `tb_event` através de `content_id` com verificação adiada.
+
+---
+
+## Tabela `tb_register_event`
+
+Armazena informações sobre a inscrição dos alunos referente aos eventos.
+
+| Coluna        | Tipo             | Descrição                                           |
+| ------------- | ---------------- | --------------------------------------------------- |
+| person_id     | VARCHAR(36)      | Identificador único da pessoa inscrita no evento    |
+| event_id      | VARCHAR(36)      | Identificador único do evento                       |
+| created_at    | TIMESTAMP         | Data e hora de criação da inscrição                 |
+| updated_at    | TIMESTAMP         | Data e hora da última atualização da inscrição      |
+| deleted_at    | TIMESTAMP         | Data e hora da exclusão (marcada) da inscrição      |
+
+*Restrição de chave estrangeira:*
+- `fk_tb_register_event_person`: Referencia `tb_person` através de `person_id`.
+- `fk_tb_register_event_event`: Referencia `tb_event` através de `event_id`.
 
 ---
 
@@ -118,7 +139,7 @@ Armazena comentários feitos pelos usuários em artigos e eventos.
 | id            | VARCHAR(36)      | Identificador único do comentário                   |
 | entity_type   | content_type      | Tipo de entidade alvo do comentário ('article' ou 'event') |
 | entity_id     | VARCHAR(36)      | Identificador único do artigo ou evento vinculado   |
-| user_id       | VARCHAR(36)      | Identificador único do usuário que fez o comentário  |
+| person_id       | VARCHAR(36)      | Identificador único da pessoa que fez o comentário  |
 | title         | VARCHAR(100)     | Título do comentário (opcional)                     |
 | content       | TEXT             | Conteúdo do comentário                              |
 | created_at    | TIMESTAMP         | Data e hora de criação do comentário                |
@@ -126,7 +147,7 @@ Armazena comentários feitos pelos usuários em artigos e eventos.
 | deleted_at    | TIMESTAMP         | Data e hora da exclusão (marcada)                   |
 
 *Restrição de chave estrangeira:*
-- `fk_tb_comment_user`: Referencia `tb_user` através de `user_id`.
+- `fk_tb_comment_person`: Referencia `tb_person` através de `person_id`.
 - `fk_tb_comment_article`: Referencia `tb_article` através de `entity_id` com exclusão em cascata.
 - `fk_tb_comment_event`: Referencia `tb_event` através de `entity_id` com exclusão em cascata.
 
@@ -141,17 +162,17 @@ Armazena documentos anexados a artigos e eventos pelos usuários.
 | id            | VARCHAR(36)      | Identificador único do documento                   |
 | entity_type   | content_type      | Tipo de entidade alvo do documento ('article' ou 'event') |
 | entity_id     | VARCHAR(36)      | Identificador único do artigo ou evento vinculado   |
-| user_id       | VARCHAR(36)      | Identificador único do usuário que anexou o documento |
+| person_id       | VARCHAR(36)      | Identificador único da pessoa que anexou o documento |
 | document      | TEXT             | Conteúdo do documento                               |
 | created_at    | TIMESTAMP         | Data e hora de criação do documento                |
 | updated_at    | TIMESTAMP         | Data e hora da última atualização                   |
 | deleted_at    | TIMESTAMP         | Data e hora da exclusão (marcada)                   |
 
 *Restrição de chave estrangeira:*
-- `fk_tb_document_user`: Referencia `tb_user` através de `user_id`.
+- `fk_tb_document_person`: Referencia `tb_person` através de `person_id`.
 - `fk_tb_document_article`: Referencia `tb_article` através de `entity_id` com exclusão em cascata.
 - `fk_tb_document_event`: Referencia `tb_event` através de `entity_id` com exclusão em cascata.
 
 ---
 
-Este é um esquema básico do banco de dados, e podem ser necessários ajustes conforme a evolução do sistema e requisitos específicos. Certifique-se de adaptar o esquema conforme necessário.
+
