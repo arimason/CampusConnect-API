@@ -27,7 +27,8 @@ O corpo da requisição deve ser um objeto JSON contendo as seguintes informaç�
 {
 "name": "Nome do Usuário",
 "email": "usuario@example.com",
-"password": "senha_do_usuario"
+"password": "senha_do_usuario",
+"permission": "student"
 }
 ```
 

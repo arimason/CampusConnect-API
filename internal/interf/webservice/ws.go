@@ -15,6 +15,7 @@ type wsImpl struct {
 	db  *sql.DB
 }
 
+// adicionando valores ao contexto e criando condição de 10 segundos para a requisição
 func (ws *wsImpl) addToContext(ctx context.Context, keyValues map[string]interface{}) context.Context {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
@@ -37,13 +38,12 @@ func (ws *wsImpl) prepareHttpWithContext(next http.Handler) http.Handler {
 }
 
 func Routes(r *mux.Router, db *sql.DB) {
-	// middleware para adicionar a conexão do banco de dados e ouros valores ao contexto
+	// middleware para adicionar a conexão do banco de dados e outros valores ao contexto
 	ws := &wsImpl{
 		db:  db,
 		ctx: context.Background(),
 	}
 	r.Use(ws.prepareHttpWithContext)
-	// criando endpoints
 	// criar usuário
 	r.HandleFunc("/user", resource.CreateAuthHandler).Methods(http.MethodPost)
 	// recupera dados de usuário

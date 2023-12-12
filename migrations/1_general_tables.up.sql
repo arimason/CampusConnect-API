@@ -4,8 +4,8 @@ CREATE TYPE permission_type AS ENUM ('owner', 'admin', 'teacher','student');
 -- Tabela de usuário
 CREATE TABLE tb_user (
     id VARCHAR(36) NOT NULL,
-    name VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
+    name VARCHAR(50)  NOT NULL,
+    email VARCHAR(100)  NOT NULL,
     password VARCHAR(100) NOT NULL,
     permission permission_type, -- Pode ser 'owner', 'admin', 'teacher','student'
     created_at TIMESTAMP NOT NULL DEFAULT now(),
