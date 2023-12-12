@@ -4,6 +4,7 @@ import (
 	"campusconnect-api/configs"
 	"context"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -44,9 +45,15 @@ func verifierToken(ctx context.Context) (*jwt.Token, error) {
 	if err != nil {
 		return nil, errors.New("erro ao obter configs")
 	}
-	token := ctx.Value("JWT")
+	// obtendo valor do token
+	bearerToken := ctx.Value("JWT")
+	parts := strings.Split(bearerToken.(string), " ")
+	if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
+		return nil, errors.New("Formato de authorization no header inválido")
+	}
+	token := parts[1]
 	// verifica a assinatura do token
-	tk, err := jwt.Parse(token.(string), func(t *jwt.Token) (interface{}, error) {
+	tk, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("assinatura do token inválida!")
 		}

@@ -4,6 +4,7 @@ import (
 	"campusconnect-api/internal/interf/resource"
 	"context"
 	"database/sql"
+	"log"
 	"net/http"
 	"time"
 
@@ -27,6 +28,8 @@ func (ws *wsImpl) addToContext(ctx context.Context, keyValues map[string]interfa
 
 func (ws *wsImpl) prepareHttpWithContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// logs
+		log.Println(r.Method, r.Proto, r.Host+r.URL.Path)
 		// criando contexto e atribuindo valores
 		ctx := ws.addToContext(ws.ctx, map[string]interface{}{
 			"JWT":    r.Header.Get("Authorization"),

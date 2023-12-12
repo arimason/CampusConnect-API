@@ -1,0 +1,136 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API for university",
+        "title": "Campus Connect API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:18080",
+    "basePath": "/",
+    "paths": {
+        "/user": {
+            "post": {
+                "description": "Create User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Create User",
+                "parameters": [
+                    {
+                        "description": "User request created",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/resource.createAuthReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/resource.createAuthResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/resource.errorResp"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/resource.errorResp"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/resource.errorResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/resource.errorResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/resource.errorResp"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "resource.createAuthReq": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password",
+                "permission"
+            ],
+            "properties": {
+                "email": {
+                    "description": "email realizado para fazer login",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "name realizado para fazer login",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "senha deve conter pelo menos 8 caracteres",
+                    "type": "string",
+                    "minLength": 8
+                },
+                "permission": {
+                    "description": "permission deve ser um desses: 'student', 'teacher', 'admin', 'owner'",
+                    "type": "string"
+                }
+            }
+        },
+        "resource.createAuthResp": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "resource.errorResp": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "description": "refere diretamente ao erro",
+                    "type": "string"
+                },
+                "message": {
+                    "description": "referente a mensagem tratada do erro",
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAtuh": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "Header"
+        }
+    }
+}

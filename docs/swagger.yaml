@@ -1,0 +1,94 @@
+basePath: /
+definitions:
+  resource.createAuthReq:
+    properties:
+      email:
+        description: email realizado para fazer login
+        type: string
+      name:
+        description: name realizado para fazer login
+        type: string
+      password:
+        description: senha deve conter pelo menos 8 caracteres
+        minLength: 8
+        type: string
+      permission:
+        description: 'permission deve ser um desses: ''student'', ''teacher'', ''admin'',
+          ''owner'''
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - permission
+    type: object
+  resource.createAuthResp:
+    properties:
+      token:
+        type: string
+    type: object
+  resource.errorResp:
+    properties:
+      error:
+        description: refere diretamente ao erro
+        type: string
+      message:
+        description: referente a mensagem tratada do erro
+        type: string
+    type: object
+host: localhost:18080
+info:
+  contact: {}
+  description: API for university
+  termsOfService: http://swagger.io/terms/
+  title: Campus Connect API
+  version: "1.0"
+paths:
+  /user:
+    post:
+      consumes:
+      - application/json
+      description: Create User
+      parameters:
+      - description: User request created
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/resource.createAuthReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            $ref: '#/definitions/resource.createAuthResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/resource.errorResp'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/resource.errorResp'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/resource.errorResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/resource.errorResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/resource.errorResp'
+      summary: Create User
+      tags:
+      - auth
+securityDefinitions:
+  ApiKeyAtuh:
+    in: Header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

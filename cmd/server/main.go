@@ -2,6 +2,7 @@ package main
 
 import (
 	"campusconnect-api/configs"
+	_ "campusconnect-api/docs"
 	"campusconnect-api/internal/infra/data/pgclient"
 	ws "campusconnect-api/internal/interf/webservice"
 	"fmt"
@@ -9,7 +10,19 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
+
+// @title Campus Connect API
+// @version 1.0
+// @description API for university
+// @termsOfService http://swagger.io/terms/
+
+// @host localhost:18080
+// @BasePath /
+// @securityDefinitions.apikey ApiKeyAtuh
+// @in Header
+// @name Authorization
 
 func main() {
 	// lendo as configurações
@@ -32,6 +45,8 @@ func main() {
 	router := mux.NewRouter()
 	// adicionando meus endpoints e dados no contexto do router
 	ws.Routes(router, db.DBConn)
+	// swag
+	router.PathPrefix("/docs").Handler(httpSwagger.Handler(httpSwagger.URL("http://localhost:18080/docs/doc.json")))
 	// criando servidor
 	port := "18080"
 	path := "localhost"
@@ -43,4 +58,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// export PATH=$PATH:/usr/local/go/bin
 }

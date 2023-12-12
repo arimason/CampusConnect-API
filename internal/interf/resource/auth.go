@@ -4,7 +4,10 @@ import (
 	authappl "campusconnect-api/internal/appl/auth"
 	"campusconnect-api/internal/domain/auth"
 	"encoding/json"
+	"fmt"
 	"net/http"
+
+	validator "github.com/go-playground/validator/v10"
 )
 
 // ================================================================================
@@ -13,10 +16,10 @@ import (
 
 // json esperado no corpo da requisição que a API irá receber
 type createAuthReq struct {
-	Name       string `json:"name"`
-	Email      string `json:"email"`
-	Password   string `json:"password"`
-	Permission string `json:"permission"`
+	Name       string `json:"name" validate:"required"`           // nome realizado para fazer login
+	Email      string `json:"email" validate:"required,email"`    // email realizado para fazer login
+	Password   string `json:"password" validate:"required,min=8"` // senha deve conter pelo menos 8 caracteres
+	Permission string `json:"permission" validate:"required"`     // permission deve ser um desses valores: 'student', 'teacher', 'admin', 'owner'
 }
 
 // json retornado no corpo da resposta
@@ -34,12 +37,35 @@ func decodeCreateAuth(r *http.Request) (*createAuthReq, error) {
 	return dto, nil
 }
 
+// Create user godoc
+// @Summary Create User
+// @Description Create User
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body createAuthReq true "User request created"
+// @Success 201
+// @Response 201 {object} createAuthResp "User created successfully"
+// @Failure 400 {object} errorResp "Bad Request"
+// @Failure 401 {object} errorResp "Unauthorized"
+// @Failure 403 {object} errorResp "Forbidden"
+// @Failure 404 {object} errorResp "Not Found"
+// @Failure 500 {object} errorResp "Internal Server Error"
+// @Router /user [post]
 // utilizo as regras de negócio do appl e preparo o response de acordo
 func CreateAuthHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	req, err := decodeCreateAuth(r)
 	if err != nil {
 		responseError(w, http.StatusBadRequest, ErrDecodeReqBody, err.Error())
+		return
+	}
+	// Validando os campos usando o pacote validator
+	validate := validator.New()
+	err = validate.Struct(req)
+	fmt.Println("nil", err)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	// importandos o serviço
@@ -63,11 +89,13 @@ func CreateAuthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// definindo tipo do conteúdo
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 	err = json.NewEncoder(w).Encode(&resp)
 	if err != nil {
 		responseError(w, http.StatusInternalServerError, "Erro ao criar json para resposta", err.Error())
 		return
 	}
+
 }
 
 // ================================================================================

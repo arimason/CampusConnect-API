@@ -12,8 +12,8 @@ const (
 )
 
 type errorResp struct {
-	Message string `json:"message"`
-	Error   string `json:"error"`
+	Message string `json:"message"` // referente a mensagem tratada do erro
+	Error   string `json:"error"`   // refere diretamente ao erro
 }
 
 func responseError(w http.ResponseWriter, status int, message, errs string) {
