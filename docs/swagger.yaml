@@ -36,7 +36,7 @@ definitions:
         description: referente a mensagem tratada do erro
         type: string
     type: object
-host: localhost:18181
+host: 193.123.118.221:18181
 info:
   contact: {}
   description: API for university
