@@ -2,8 +2,14 @@ basePath: /
 definitions:
   resource.createAuthReq:
     properties:
+      courseID:
+        type: string
       email:
         description: email realizado para fazer login
+        type: string
+      firstName:
+        type: string
+      lastName:
         type: string
       name:
         description: nome realizado para fazer login
@@ -17,15 +23,15 @@ definitions:
           ''admin'', ''owner'''
         type: string
     required:
+    - courseID
     - email
+    - firstName
+    - lastName
     - name
     - password
     - permission
     type: object
   resource.createAuthResp:
-    properties:
-      token:
-        type: string
     type: object
   resource.errorResp:
     properties:

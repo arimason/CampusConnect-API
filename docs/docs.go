@@ -85,14 +85,26 @@ const docTemplate = `{
         "resource.createAuthReq": {
             "type": "object",
             "required": [
+                "courseID",
                 "email",
+                "firstName",
+                "lastName",
                 "name",
                 "password",
                 "permission"
             ],
             "properties": {
+                "courseID": {
+                    "type": "string"
+                },
                 "email": {
                     "description": "email realizado para fazer login",
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
                     "type": "string"
                 },
                 "name": {
@@ -111,12 +123,7 @@ const docTemplate = `{
             }
         },
         "resource.createAuthResp": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         },
         "resource.errorResp": {
             "type": "object",

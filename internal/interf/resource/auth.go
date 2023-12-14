@@ -3,6 +3,7 @@ package resource
 import (
 	authappl "campusconnect-api/internal/appl/auth"
 	"campusconnect-api/internal/domain/auth"
+	"campusconnect-api/internal/domain/person"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -20,11 +21,13 @@ type createAuthReq struct {
 	Email      string `json:"email" validate:"required,email"`    // email realizado para fazer login
 	Password   string `json:"password" validate:"required,min=8"` // senha deve conter pelo menos 8 caracteres
 	Permission string `json:"permission" validate:"required"`     // permission deve ser um desses valores: 'student', 'teacher', 'admin', 'owner'
+	CourseID   string `json:"courseID" validate:"required"`
+	FirstName  string `json:"firstName" validate:"required"`
+	LastName   string `json:"lastName" validate:"required"`
 }
 
 // json retornado no corpo da resposta
 type createAuthResp struct {
-	JWT string `json:"token"`
 }
 
 // realiza o decode da requisição recebida pela API
@@ -72,31 +75,25 @@ func CreateAuthHandler(w http.ResponseWriter, r *http.Request) {
 	// importandos o serviço
 	appl := authappl.NewAuthApplication(r.Context())
 	// criando entidade
-	ent := &auth.Entity{
+	authEnt := &auth.Entity{
 		Name:       req.Name,
 		Email:      req.Email,
 		Password:   req.Password,
 		Permission: auth.Permission[req.Permission],
 	}
+	personEnt := person.Entity{
+		CourseID:  req.CourseID,
+		FirstName: req.FirstName,
+		LastName:  req.LastName,
+	}
 	// envio os dados de criação do usuário para o appl
-	token, err := appl.Create(ent)
+	err = appl.Create(authEnt, &personEnt)
 	if err != nil {
 		responseError(w, http.StatusBadRequest, ErrCreateEnt, err.Error())
 		return
 	}
-	// preparo o json de resposta e escrevo no ResponseWriter
-	resp := &createAuthResp{
-		JWT: token,
-	}
-	// definindo tipo do conteúdo
-	w.Header().Set("Content-Type", "application/json")
+	// status 201
 	w.WriteHeader(http.StatusCreated)
-	err = json.NewEncoder(w).Encode(&resp)
-	if err != nil {
-		responseError(w, http.StatusInternalServerError, "Erro ao criar json para resposta", err.Error())
-		return
-	}
-
 }
 
 // ================================================================================

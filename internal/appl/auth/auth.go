@@ -1,7 +1,9 @@
 package authappl
 
 import (
+	personappl "campusconnect-api/internal/appl/person"
 	"campusconnect-api/internal/domain/auth"
+	"campusconnect-api/internal/domain/person"
 	authrep "campusconnect-api/internal/infra/auth"
 	contxt "campusconnect-api/internal/infra/context"
 	"campusconnect-api/pkg/utils"
@@ -15,30 +17,31 @@ type authApplicationImpl struct {
 }
 
 // Cria um novo usuário e retorna o token gerado após a criação desse novo usuário, não sendo necessário o cliente passsar por um login
-func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
+func (s *authApplicationImpl) Create(e *auth.Entity, p *person.Entity) error {
 	// iniciando transação
 	tx, err := contxt.GetDbConn(s.ctx)
 	if err != nil {
-		return "", err
+		return err
 	}
 	// importando métodos do repositório
 	rep := authrep.NewAuthRepository(tx)
 	// verificando se o email já existe, de acordo com o dados do banco
 	findEnt, err := rep.FindByEmailOrName(e.Email)
 	if err != nil && err != authrep.ErrFindByEmailNotFound {
-		return "", err
+		return err
 	}
 	if findEnt != nil {
-		return "", errors.New("email já existe")
+		return errors.New("email já existe")
 	}
 	// geração de hash a partir da senha
 	hash, err := utils.GenerateHash(e.Password)
 	if err != nil {
-		return "", err
+		return err
 	}
+	userID := utils.NewIdentity()
 	// atribuindo valor a entidade
 	ent := &auth.Entity{
-		ID:         utils.NewIdentity(),
+		ID:         userID,
 		Name:       e.Name,
 		Email:      e.Email,
 		Password:   hash,
@@ -47,21 +50,32 @@ func (s *authApplicationImpl) Create(e *auth.Entity) (string, error) {
 	// inserindo entidade no data base
 	err = rep.Create(ent)
 	if err != nil {
-		return "", err
+		tx.Rollback()
+		return err
 	}
-	// gerando token
-	token, err := createToken(string(ent.ID), e.Email, string(e.Permission))
+	// importacao do package personappl
+	psAppl := personappl.NewPersonApplication(s.ctx)
+	// entity person
+	psEnt := &person.Entity{
+		ID:        utils.NewIdentity(),
+		UserID:    string(userID),
+		CourseID:  p.CourseID,
+		FirstName: p.FirstName,
+		LastName:  p.LastName,
+	}
+	err = psAppl.Create(psEnt)
 	if err != nil {
-		return "", err
+		tx.Rollback()
+		return err
 	}
 	// commit da transação
 	err = tx.Commit()
 	if err != nil {
 		tx.Rollback()
-		return "", err
+		return err
 	}
 	// sucesso
-	return token, nil
+	return nil
 }
 
 // Realizo o login, recebendo email, ou username e uma senha, dados esses que serão validados
