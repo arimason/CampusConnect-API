@@ -96,7 +96,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
-                    "description": "name realizado para fazer login",
+                    "description": "nome realizado para fazer login",
                     "type": "string"
                 },
                 "password": {
@@ -105,7 +105,7 @@ const docTemplate = `{
                     "minLength": 8
                 },
                 "permission": {
-                    "description": "permission deve ser um desses: 'student', 'teacher', 'admin', 'owner'",
+                    "description": "permission deve ser um desses valores: 'student', 'teacher', 'admin', 'owner'",
                     "type": "string"
                 }
             }
@@ -144,7 +144,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:18080",
+	Host:             "localhost:18181",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Campus Connect API",

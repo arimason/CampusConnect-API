@@ -7,7 +7,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:18080",
+    "host": "localhost:18181",
     "basePath": "/",
     "paths": {
         "/user": {
@@ -90,7 +90,7 @@
                     "type": "string"
                 },
                 "name": {
-                    "description": "name realizado para fazer login",
+                    "description": "nome realizado para fazer login",
                     "type": "string"
                 },
                 "password": {
@@ -99,7 +99,7 @@
                     "minLength": 8
                 },
                 "permission": {
-                    "description": "permission deve ser um desses: 'student', 'teacher', 'admin', 'owner'",
+                    "description": "permission deve ser um desses valores: 'student', 'teacher', 'admin', 'owner'",
                     "type": "string"
                 }
             }

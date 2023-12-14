@@ -18,7 +18,7 @@ import (
 // @description API for university
 // @termsOfService http://swagger.io/terms/
 
-// @host localhost:18080
+// @host localhost:18181
 // @BasePath /
 // @securityDefinitions.apikey ApiKeyAtuh
 // @in Header
@@ -46,11 +46,11 @@ func main() {
 	// adicionando meus endpoints e dados no contexto do router
 	ws.Routes(router, db.DBConn)
 	// swag
-	router.PathPrefix("/docs").Handler(httpSwagger.Handler(httpSwagger.URL("http://localhost:18080/docs/doc.json")))
+	router.PathPrefix("/docs").Handler(httpSwagger.Handler(httpSwagger.URL("http://localhost:18181/docs/doc.json")))
 	// criando servidor
-	port := "18080"
-	path := "localhost"
-	// path := "0.0.0.0"
+	port := "18181"
+	// path := "localhost"
+	path := "0.0.0.0"
 	url := fmt.Sprintf("%s:%s", path, port)
 	// iniciando servidor
 	log.Printf("Servidor inicializado  http://%s...\n", url)
@@ -58,5 +58,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// export PATH=$PATH:/usr/local/go/bin
 }
