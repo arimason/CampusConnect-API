@@ -42,6 +42,18 @@ definitions:
         description: referente a mensagem tratada do erro
         type: string
     type: object
+  resource.loginReq:
+    properties:
+      emailOrName:
+        type: string
+      password:
+        type: string
+    type: object
+  resource.loginResp:
+    properties:
+      token:
+        type: string
+    type: object
 host: 193.123.118.221:18181
 info:
   contact: {}
@@ -50,7 +62,7 @@ info:
   title: Campus Connect API
   version: "1.0"
 paths:
-  /user:
+  /pub/user:
     post:
       consumes:
       - application/json
@@ -90,6 +102,48 @@ paths:
           schema:
             $ref: '#/definitions/resource.errorResp'
       summary: Create User
+      tags:
+      - auth
+  /pub/user/login:
+    post:
+      consumes:
+      - application/json
+      description: Request for Login
+      parameters:
+      - description: User request login
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/resource.loginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User successfully logged in
+          schema:
+            $ref: '#/definitions/resource.loginResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/resource.errorResp'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/resource.errorResp'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/resource.errorResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/resource.errorResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/resource.errorResp'
+      summary: Login
       tags:
       - auth
 securityDefinitions:

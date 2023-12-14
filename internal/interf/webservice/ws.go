@@ -55,9 +55,10 @@ func Routes(r *mux.Router, db *sql.DB) {
 	}
 	r.Use(ws.prepareHttpWithContext)
 	// criar usuário
-	r.HandleFunc("/user", resource.CreateAuthHandler).Methods(http.MethodPost)
-	// recupera dados de usuário
-	r.HandleFunc("/user", resource.FindByEmailHandler).Methods(http.MethodGet)
+	r.HandleFunc("/pub/user", resource.CreateAuthHandler).Methods(http.MethodPost)
 	// realiza login
-	r.HandleFunc("/user/login", resource.LoginHandler).Methods(http.MethodPost)
+	r.HandleFunc("/pub/user/login", resource.LoginHandler).Methods(http.MethodPost)
+	// recupera dados de usuário
+	r.HandleFunc("/priv/user", resource.FindByEmailHandler).Methods(http.MethodGet)
+
 }

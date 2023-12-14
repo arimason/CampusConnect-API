@@ -16,7 +16,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/user": {
+        "/pub/user": {
             "post": {
                 "description": "Create User",
                 "consumes": [
@@ -45,6 +45,70 @@ const docTemplate = `{
                         "description": "User created successfully",
                         "schema": {
                             "$ref": "#/definitions/resource.createAuthResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/resource.errorResp"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/resource.errorResp"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/resource.errorResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/resource.errorResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/resource.errorResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/pub/user/login": {
+            "post": {
+                "description": "Request for Login",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login",
+                "parameters": [
+                    {
+                        "description": "User request login",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/resource.loginReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User successfully logged in",
+                        "schema": {
+                            "$ref": "#/definitions/resource.loginResp"
                         }
                     },
                     "400": {
@@ -134,6 +198,25 @@ const docTemplate = `{
                 },
                 "message": {
                     "description": "referente a mensagem tratada do erro",
+                    "type": "string"
+                }
+            }
+        },
+        "resource.loginReq": {
+            "type": "object",
+            "properties": {
+                "emailOrName": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "resource.loginResp": {
+            "type": "object",
+            "properties": {
+                "token": {
                     "type": "string"
                 }
             }

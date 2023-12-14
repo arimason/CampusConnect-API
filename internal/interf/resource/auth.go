@@ -54,7 +54,7 @@ func decodeCreateAuth(r *http.Request) (*createAuthReq, error) {
 // @Failure 403 {object} errorResp "Forbidden"
 // @Failure 404 {object} errorResp "Not Found"
 // @Failure 500 {object} errorResp "Internal Server Error"
-// @Router /user [post]
+// @Router /pub/user [post]
 // utilizo as regras de negócio do appl e preparo o response de acordo
 func CreateAuthHandler(w http.ResponseWriter, r *http.Request) {
 	// caso tivesse um id no formato uuid no path: Param id path string true "product ID" Format(uuid)
@@ -153,6 +153,21 @@ func decodeLoginReq(r *http.Request) (*loginReq, error) {
 	return dto, nil
 }
 
+// Create user godoc
+// @Summary Login
+// @Description Request for Login
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body loginReq true "User request login"
+// @Success 200
+// @Response 200 {object} loginResp "User successfully logged in"
+// @Failure 400 {object} errorResp "Bad Request"
+// @Failure 401 {object} errorResp "Unauthorized"
+// @Failure 403 {object} errorResp "Forbidden"
+// @Failure 404 {object} errorResp "Not Found"
+// @Failure 500 {object} errorResp "Internal Server Error"
+// @Router /pub/user/login [post]
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// no fim de tudo fecha o corpo do request para evitar vazamento de recurso
 	defer r.Body.Close()
@@ -175,6 +190,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// definindo o tipo do conteúdo
 	w.Header().Set("Content-Type", "application/json")
+	// status code
+	w.WriteHeader(http.StatusOK)
 	// realizo o encode para o ResponseWriter
 	err = json.NewEncoder(w).Encode(&resp)
 	if err != nil {
