@@ -1,4 +1,11 @@
 ``` bash
+sudo apt update
+sudo apt install docker.io
+sudo usermod -aG docker $USER
+sudo systemctl start docker
+```
+
+``` bash
 docker network create minha-rede
 ```
 
