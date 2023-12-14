@@ -133,3 +133,18 @@ CREATE TABLE tb_document (
     CONSTRAINT fk_tb_document_article FOREIGN KEY (entity_id) REFERENCES tb_article(id) ON DELETE CASCADE,
     CONSTRAINT fk_tb_document_event FOREIGN KEY (entity_id) REFERENCES tb_event(id) ON DELETE CASCADE
 );
+
+-- Inserir curso de Engenharia no período da manhã
+INSERT INTO tb_course (id, name, period) VALUES ('1', 'Engenharia', 'morning');
+
+-- Inserir curso de Medicina no período da noite
+INSERT INTO tb_course (id, name, period) VALUES ('2', 'Medicina', 'night');
+
+-- Inserir curso de Administração durante o dia
+INSERT INTO tb_course (id, name, period) VALUES ('3', 'Administração', 'daytime');
+
+-- Inserir curso de Direito em todos os períodos
+INSERT INTO tb_course (id, name, period) VALUES ('4', 'Direito', 'all');
+
+-- Inserir curso de Psicologia sem período específico
+INSERT INTO tb_course (id, name, period) VALUES ('5', 'Psicologia', 'all');

@@ -21,9 +21,9 @@ type createAuthReq struct {
 	Email      string `json:"email" validate:"required,email"`    // email realizado para fazer login
 	Password   string `json:"password" validate:"required,min=8"` // senha deve conter pelo menos 8 caracteres
 	Permission string `json:"permission" validate:"required"`     // permission deve ser um desses valores: 'student', 'teacher', 'admin', 'owner'
-	CourseID   string `json:"courseID" validate:"required"`
-	FirstName  string `json:"firstName" validate:"required"`
-	LastName   string `json:"lastName" validate:"required"`
+	CourseID   string `json:"courseID" validate:"required"`       // id do curso
+	FirstName  string `json:"firstName" validate:"required"`      // nome
+	LastName   string `json:"lastName" validate:"required"`       // sobrenome
 }
 
 // json retornado no corpo da resposta
@@ -48,7 +48,7 @@ func decodeCreateAuth(r *http.Request) (*createAuthReq, error) {
 // @Produce json
 // @Param request body createAuthReq true "User request created"
 // @Success 201
-// @Response 201 {object} createAuthResp "User created successfully"
+// @Response 201 "User created successfully"
 // @Failure 400 {object} errorResp "Bad Request"
 // @Failure 401 {object} errorResp "Unauthorized"
 // @Failure 403 {object} errorResp "Forbidden"
@@ -135,12 +135,12 @@ func FindByEmailHandler(w http.ResponseWriter, r *http.Request) {
 // ================================================================================
 
 type loginReq struct {
-	EmailOrName string `json:"emailOrName"`
-	Password    string `json:"password"`
+	EmailOrName string `json:"emailOrName" validate:"required"` // nick ou email usado para realizar login
+	Password    string `json:"password" validate:"required"`    // senha
 }
 
 type loginResp struct {
-	Token string `json:"token"`
+	Token string `json:"token"` // token utilizado para autenticacao
 }
 
 // decodifica os dados do body da requisição
@@ -153,7 +153,7 @@ func decodeLoginReq(r *http.Request) (*loginReq, error) {
 	return dto, nil
 }
 
-// Create user godoc
+// Login godoc
 // @Summary Login
 // @Description Request for Login
 // @Tags auth
