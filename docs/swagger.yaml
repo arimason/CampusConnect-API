@@ -80,6 +80,43 @@ info:
   title: Campus Connect API
   version: "1.0"
 paths:
+  /priv/user:
+    get:
+      consumes:
+      - application/json
+      description: Request to retrieve data from a person
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully obtained data
+          schema:
+            $ref: '#/definitions/resource.findByEmailResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/resource.errorResp'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/resource.errorResp'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/resource.errorResp'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/resource.errorResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/resource.errorResp'
+      security:
+      - BearerAuth: []
+      summary: Find Person
+      tags:
+      - person
   /pub/user:
     post:
       consumes:

@@ -115,7 +115,7 @@ type findByEmailResp struct {
 }
 
 // FindPerson godoc
-// @Summary FindPerson
+// @Summary Find Person
 // @Description Request to retrieve data from a person
 // @Tags person
 // @Accept json
@@ -128,7 +128,7 @@ type findByEmailResp struct {
 // @Failure 404 {object} errorResp "Not Found"
 // @Failure 500 {object} errorResp "Internal Server Error"
 // @Security BearerAuth
-// @Router /pub/user/login [post]
+// @Router /priv/user [get]
 // realizo a consulta no appl para retornar os dados da requisição
 func FindByEmailHandler(w http.ResponseWriter, r *http.Request) {
 	// iniciando transação
