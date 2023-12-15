@@ -1,6 +1,6 @@
 DB_DRIVER: postgres
 # DB_HOST: meu-postgres
-DB_HOST: "204.216.131.14"
+DB_HOST: "134.65.242.39"
 DB_PORT: 5433
 DB_USER: root
 DB_PASSWORD: root
