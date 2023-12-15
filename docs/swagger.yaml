@@ -113,7 +113,7 @@ paths:
           schema:
             $ref: '#/definitions/resource.errorResp'
       security:
-      - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Find Person
       tags:
       - person
@@ -196,8 +196,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/resource.errorResp'
-      security:
-      - BearerAuth: []
       summary: Login
       tags:
       - auth

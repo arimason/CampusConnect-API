@@ -20,7 +20,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BearerAuth": []
+                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "Request to retrieve data from a person",
@@ -137,11 +137,6 @@ const docTemplate = `{
         },
         "/pub/user/login": {
             "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "Request for Login",
                 "consumes": [
                     "application/json"

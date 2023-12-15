@@ -39,7 +39,7 @@ func decodeCreateAuth(r *http.Request) (*createAuthReq, error) {
 // Create user godoc
 // @Summary Create User
 // @Description Create User
-// @Tags auth
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param request body createAuthReq true "User request created"
@@ -117,7 +117,7 @@ type findByEmailResp struct {
 // FindPerson godoc
 // @Summary Find Person
 // @Description Request to retrieve data from a person
-// @Tags person
+// @Tags Person
 // @Accept json
 // @Produce json
 // @Success 200
@@ -127,7 +127,7 @@ type findByEmailResp struct {
 // @Failure 403 {object} errorResp "Forbidden"
 // @Failure 404 {object} errorResp "Not Found"
 // @Failure 500 {object} errorResp "Internal Server Error"
-// @Security BearerAuth
+// @Security ApiKeyAuth
 // @Router /priv/user [get]
 // realizo a consulta no appl para retornar os dados da requisição
 func FindByEmailHandler(w http.ResponseWriter, r *http.Request) {
@@ -188,7 +188,7 @@ func decodeLoginReq(r *http.Request) (*loginReq, error) {
 // Login godoc
 // @Summary Login
 // @Description Request for Login
-// @Tags auth
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param request body loginReq true "User request login"
@@ -199,7 +199,6 @@ func decodeLoginReq(r *http.Request) (*loginReq, error) {
 // @Failure 403 {object} errorResp "Forbidden"
 // @Failure 404 {object} errorResp "Not Found"
 // @Failure 500 {object} errorResp "Internal Server Error"
-// @Security BearerAuth
 // @Router /pub/user/login [post]
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// no fim de tudo fecha o corpo do request para evitar vazamento de recurso
