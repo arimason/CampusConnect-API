@@ -28,13 +28,6 @@ func (ws *wsImpl) addToContext(ctx context.Context, keyValues map[string]interfa
 
 func (ws *wsImpl) prepareHttpWithContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		if r.Method == "OPTIONS" {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
 		// logs
 		log.Println(r.Method, r.Proto, r.Host+r.URL.Path)
 		// criando contexto e atribuindo valores
