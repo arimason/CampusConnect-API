@@ -50,7 +50,6 @@ func (s *authApplicationImpl) Create(e *auth.Entity, p *person.Entity) error {
 	// inserindo entidade no data base
 	err = rep.Create(ent)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 	// importacao do package personappl
@@ -65,13 +64,6 @@ func (s *authApplicationImpl) Create(e *auth.Entity, p *person.Entity) error {
 	}
 	err = psAppl.Create(psEnt)
 	if err != nil {
-		tx.Rollback()
-		return err
-	}
-	// commit da transação
-	err = tx.Commit()
-	if err != nil {
-		tx.Rollback()
 		return err
 	}
 	// sucesso
