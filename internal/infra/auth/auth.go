@@ -101,13 +101,6 @@ func (r *authRepositoryImpl) findByEmailOrName(emailOrName string) (*auth.Entity
 func (r *authRepositoryImpl) Create(e *auth.Entity) error {
 	err := r.create(e)
 	if err != nil {
-		r.Tx.Rollback()
-		return err
-	}
-	// commit da transação
-	err = r.Tx.Commit()
-	if err != nil {
-		r.Tx.Rollback()
 		return err
 	}
 	return nil
