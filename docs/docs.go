@@ -79,6 +79,11 @@ const docTemplate = `{
         },
         "/pub/user/login": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Request for Login",
                 "consumes": [
                     "application/json"
@@ -195,6 +200,23 @@ const docTemplate = `{
                 },
                 "message": {
                     "description": "referente a mensagem tratada do erro",
+                    "type": "string"
+                }
+            }
+        },
+        "resource.findByEmailResp": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "permission": {
                     "type": "string"
                 }
             }

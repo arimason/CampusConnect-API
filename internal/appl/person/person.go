@@ -35,8 +35,9 @@ func (s *personApplicationImpl) Create(e *person.Entity) error {
 }
 
 // funcao que exporta os metodos do meu appl
-func NewPersonApplication(ctx context.Context) person.Service {
+func NewPersonApplication(ctx context.Context, tx *sql.Tx) person.Service {
 	return &personApplicationImpl{
 		ctx: ctx,
+		tx:  tx,
 	}
 }

@@ -5,12 +5,10 @@ import (
 	"campusconnect-api/internal/domain/auth"
 	"campusconnect-api/internal/domain/person"
 	authrep "campusconnect-api/internal/infra/auth"
-	contxt "campusconnect-api/internal/infra/context"
 	"campusconnect-api/pkg/utils"
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 )
 
 // estrutura me garante que eu terei simetria com os métodos necessário e expressado na interface Service referente a entidade auth
@@ -46,13 +44,12 @@ func (s *authApplicationImpl) Create(e *auth.Entity, p *person.Entity) error {
 		Permission: e.Permission,
 	}
 	// inserindo entidade no data base
-	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>2", ent)
 	err = rep.Create(ent)
 	if err != nil {
 		return err
 	}
 	// importacao do package personappl
-	psAppl := personappl.NewPersonApplication(s.ctx)
+	psAppl := personappl.NewPersonApplication(s.ctx, s.tx)
 	// entity person
 	psEnt := &person.Entity{
 		ID:        utils.NewIdentity(),
@@ -71,13 +68,8 @@ func (s *authApplicationImpl) Create(e *auth.Entity, p *person.Entity) error {
 
 // Realizo o login, recebendo email, ou username e uma senha, dados esses que serão validados
 func (s *authApplicationImpl) Login(emailOrName, password string) (string, error) {
-	// obtendo transação
-	tx, err := contxt.GetDbConn(s.ctx)
-	if err != nil {
-		return "", err
-	}
 	// importando repositorio
-	rep := authrep.NewAuthRepository(tx)
+	rep := authrep.NewAuthRepository(s.tx)
 	// realizo consulta no banco para comparar se os dados fornecidos para login são válidos
 	ent, err := rep.FindByEmailOrName(emailOrName)
 	// caso a consulta retorne vazio, ou seja, não possui esse usuário no banco, retorna um erro
@@ -100,27 +92,16 @@ func (s *authApplicationImpl) Login(emailOrName, password string) (string, error
 
 // Busca os dados do usuário de acordo com o email dentro do token
 func (s *authApplicationImpl) FindByEmail() (*auth.Entity, error) {
-	// obtendo transação
-	tx, err := contxt.GetDbConn(s.ctx)
-	if err != nil {
-		return nil, err
-	}
 	// validando token
 	tk, err := tokenValues(s.ctx)
 	if err != nil {
 		return nil, err
 	}
 	// importando repositorio
-	rep := authrep.NewAuthRepository(tx)
+	rep := authrep.NewAuthRepository(s.tx)
 	// realizando consulta no banco de dados
 	ent, err := rep.FindByEmailOrName(tk.Email)
 	if err != nil {
-		return nil, err
-	}
-	// commit da transação
-	err = tx.Commit()
-	if err != nil {
-		tx.Rollback()
 		return nil, err
 	}
 	// sucesso

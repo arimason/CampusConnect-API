@@ -113,7 +113,6 @@ func (r *authRepositoryImpl) FindByEmailOrName(emailOrName string) (*auth.Entity
 		return nil, err
 	}
 	if err != nil {
-		r.Tx.Rollback()
 		return nil, err
 	}
 

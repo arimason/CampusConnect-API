@@ -43,6 +43,17 @@ definitions:
         description: referente a mensagem tratada do erro
         type: string
     type: object
+  resource.findByEmailResp:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      permission:
+        type: string
+    type: object
   resource.loginReq:
     properties:
       emailOrName:
@@ -148,6 +159,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/resource.errorResp'
+      security:
+      - BearerAuth: []
       summary: Login
       tags:
       - auth

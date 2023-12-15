@@ -6,7 +6,6 @@ import (
 	"campusconnect-api/internal/domain/person"
 	contxt "campusconnect-api/internal/infra/context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	validator "github.com/go-playground/validator/v10"
@@ -25,10 +24,6 @@ type createAuthReq struct {
 	CourseID   string `json:"courseID" validate:"required"`       // id do curso
 	FirstName  string `json:"firstName" validate:"required"`      // nome
 	LastName   string `json:"lastName" validate:"required"`       // sobrenome
-}
-
-// json retornado no corpo da resposta
-type createAuthResp struct {
 }
 
 // realiza o decode da requisição recebida pela API
@@ -58,7 +53,6 @@ func decodeCreateAuth(r *http.Request) (*createAuthReq, error) {
 // @Router /pub/user [post]
 // utilizo as regras de negócio do appl e preparo o response de acordo
 func CreateAuthHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>@")
 	// caso tivesse um id no formato uuid no path: Param id path string true "product ID" Format(uuid)
 	defer r.Body.Close()
 	req, err := decodeCreateAuth(r)
@@ -120,6 +114,21 @@ type findByEmailResp struct {
 	Permission string `json:"permission"`
 }
 
+// FindPerson godoc
+// @Summary FindPerson
+// @Description Request to retrieve data from a person
+// @Tags person
+// @Accept json
+// @Produce json
+// @Success 200
+// @Response 200 {object} findByEmailResp "Successfully obtained data"
+// @Failure 400 {object} errorResp "Bad Request"
+// @Failure 401 {object} errorResp "Unauthorized"
+// @Failure 403 {object} errorResp "Forbidden"
+// @Failure 404 {object} errorResp "Not Found"
+// @Failure 500 {object} errorResp "Internal Server Error"
+// @Security BearerAuth
+// @Router /pub/user/login [post]
 // realizo a consulta no appl para retornar os dados da requisição
 func FindByEmailHandler(w http.ResponseWriter, r *http.Request) {
 	// iniciando transação
@@ -141,6 +150,11 @@ func FindByEmailHandler(w http.ResponseWriter, r *http.Request) {
 		Permission: string(ent.Permission),
 	}
 	w.Header().Set("Content-Type", "application/json")
+	err = tx.Commit()
+	if err != nil {
+		responseError(w, http.StatusBadRequest, "erro ao encerrar tx", err.Error())
+		return
+	}
 	err = json.NewEncoder(w).Encode(&resp)
 	if err != nil {
 		responseError(w, http.StatusInternalServerError, ErrFind, err.Error())
@@ -185,6 +199,7 @@ func decodeLoginReq(r *http.Request) (*loginReq, error) {
 // @Failure 403 {object} errorResp "Forbidden"
 // @Failure 404 {object} errorResp "Not Found"
 // @Failure 500 {object} errorResp "Internal Server Error"
+// @Security BearerAuth
 // @Router /pub/user/login [post]
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// no fim de tudo fecha o corpo do request para evitar vazamento de recurso
