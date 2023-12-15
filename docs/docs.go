@@ -42,10 +42,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "User created successfully",
-                        "schema": {
-                            "$ref": "#/definitions/resource.createAuthResp"
-                        }
+                        "description": "User created successfully"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -159,6 +156,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "courseID": {
+                    "description": "id do curso",
                     "type": "string"
                 },
                 "email": {
@@ -166,9 +164,11 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "firstName": {
+                    "description": "nome",
                     "type": "string"
                 },
                 "lastName": {
+                    "description": "sobrenome",
                     "type": "string"
                 },
                 "name": {
@@ -186,9 +186,6 @@ const docTemplate = `{
                 }
             }
         },
-        "resource.createAuthResp": {
-            "type": "object"
-        },
         "resource.errorResp": {
             "type": "object",
             "properties": {
@@ -204,11 +201,17 @@ const docTemplate = `{
         },
         "resource.loginReq": {
             "type": "object",
+            "required": [
+                "emailOrName",
+                "password"
+            ],
             "properties": {
                 "emailOrName": {
+                    "description": "nick ou email usado para realizar login",
                     "type": "string"
                 },
                 "password": {
+                    "description": "senha",
                     "type": "string"
                 }
             }
@@ -217,6 +220,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "token": {
+                    "description": "token utilizado para autenticacao",
                     "type": "string"
                 }
             }

@@ -3,13 +3,16 @@ definitions:
   resource.createAuthReq:
     properties:
       courseID:
+        description: id do curso
         type: string
       email:
         description: email realizado para fazer login
         type: string
       firstName:
+        description: nome
         type: string
       lastName:
+        description: sobrenome
         type: string
       name:
         description: nome realizado para fazer login
@@ -31,8 +34,6 @@ definitions:
     - password
     - permission
     type: object
-  resource.createAuthResp:
-    type: object
   resource.errorResp:
     properties:
       error:
@@ -45,13 +46,19 @@ definitions:
   resource.loginReq:
     properties:
       emailOrName:
+        description: nick ou email usado para realizar login
         type: string
       password:
+        description: senha
         type: string
+    required:
+    - emailOrName
+    - password
     type: object
   resource.loginResp:
     properties:
       token:
+        description: token utilizado para autenticacao
         type: string
     type: object
 host: 193.123.118.221:18181
@@ -79,8 +86,6 @@ paths:
       responses:
         "201":
           description: User created successfully
-          schema:
-            $ref: '#/definitions/resource.createAuthResp'
         "400":
           description: Bad Request
           schema:
