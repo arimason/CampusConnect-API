@@ -17,13 +17,11 @@ import (
 // @version 1.0
 // @description API for university
 // @termsOfService http://swagger.io/terms/
-
 // @host 134.65.242.39:18181
 // @BasePath /
-// @securityDefinitions.apikey ApiKeyAtuh
+// @securityDefinitions.apikey ApiKeyAuth
 // @in Header
 // @name Authorization
-
 func main() {
 	// lendo as configurações
 	cfg, err := configs.LoadConfigs("configs/app.yaml")

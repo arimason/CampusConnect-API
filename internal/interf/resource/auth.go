@@ -127,8 +127,8 @@ type findByEmailResp struct {
 // @Failure 403 {object} errorResp "Forbidden"
 // @Failure 404 {object} errorResp "Not Found"
 // @Failure 500 {object} errorResp "Internal Server Error"
-// @Security ApiKeyAuth
 // @Router /priv/user [get]
+// @Security ApiKeyAuth
 // realizo a consulta no appl para retornar os dados da requisição
 func FindByEmailHandler(w http.ResponseWriter, r *http.Request) {
 	// iniciando transação

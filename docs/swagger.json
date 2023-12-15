@@ -25,7 +25,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "person"
+                    "Person"
                 ],
                 "summary": "Find Person",
                 "responses": {
@@ -78,7 +78,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "Create User",
                 "parameters": [
@@ -139,7 +139,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "Login",
                 "parameters": [
@@ -296,7 +296,7 @@
         }
     },
     "securityDefinitions": {
-        "ApiKeyAtuh": {
+        "ApiKeyAuth": {
             "type": "apiKey",
             "name": "Authorization",
             "in": "Header"

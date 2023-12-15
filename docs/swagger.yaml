@@ -116,7 +116,7 @@ paths:
       - ApiKeyAuth: []
       summary: Find Person
       tags:
-      - person
+      - Person
   /pub/user:
     post:
       consumes:
@@ -156,7 +156,7 @@ paths:
             $ref: '#/definitions/resource.errorResp'
       summary: Create User
       tags:
-      - auth
+      - Auth
   /pub/user/login:
     post:
       consumes:
@@ -198,9 +198,9 @@ paths:
             $ref: '#/definitions/resource.errorResp'
       summary: Login
       tags:
-      - auth
+      - Auth
 securityDefinitions:
-  ApiKeyAtuh:
+  ApiKeyAuth:
     in: Header
     name: Authorization
     type: apiKey
