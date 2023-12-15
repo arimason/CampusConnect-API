@@ -49,8 +49,8 @@ func main() {
 	router.PathPrefix("/docs").Handler(httpSwagger.Handler(httpSwagger.URL("http://134.65.242.39:18181/docs/doc.json")))
 	// criando servidor
 	port := "18181"
-	// path := "localhost"
-	path := "0.0.0.0"
+	path := "localhost"
+	// path := "0.0.0.0"
 	url := fmt.Sprintf("%s:%s", path, port)
 	// iniciando servidor
 	log.Printf("Servidor inicializado  http://%s...\n", url)

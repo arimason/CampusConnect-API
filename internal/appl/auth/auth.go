@@ -8,30 +8,28 @@ import (
 	contxt "campusconnect-api/internal/infra/context"
 	"campusconnect-api/pkg/utils"
 	"context"
+	"database/sql"
 	"errors"
+	"fmt"
 )
 
 // estrutura me garante que eu terei simetria com os métodos necessário e expressado na interface Service referente a entidade auth
 type authApplicationImpl struct {
 	ctx context.Context
+	tx  *sql.Tx
 }
 
 // Cria um novo usuário e retorna o token gerado após a criação desse novo usuário, não sendo necessário o cliente passsar por um login
 func (s *authApplicationImpl) Create(e *auth.Entity, p *person.Entity) error {
-	// iniciando transação
-	tx, err := contxt.GetDbConn(s.ctx)
-	if err != nil {
-		return err
-	}
 	// importando métodos do repositório
-	rep := authrep.NewAuthRepository(tx)
+	rep := authrep.NewAuthRepository(s.tx)
 	// verificando se o email já existe, de acordo com o dados do banco
 	findEnt, err := rep.FindByEmailOrName(e.Email)
 	if err != nil && err != authrep.ErrFindByEmailNotFound {
 		return err
 	}
 	if findEnt != nil {
-		return errors.New("email já existe")
+		return errors.New("email ou nick já existe")
 	}
 	// geração de hash a partir da senha
 	hash, err := utils.GenerateHash(e.Password)
@@ -48,6 +46,7 @@ func (s *authApplicationImpl) Create(e *auth.Entity, p *person.Entity) error {
 		Permission: e.Permission,
 	}
 	// inserindo entidade no data base
+	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>2", ent)
 	err = rep.Create(ent)
 	if err != nil {
 		return err
@@ -137,8 +136,9 @@ func (s *authApplicationImpl) UpdatePassword(password string) (string, error) {
 	return "", nil
 }
 
-func NewAuthApplication(ctx context.Context) auth.Service {
+func NewAuthApplication(ctx context.Context, tx *sql.Tx) auth.Service {
 	return &authApplicationImpl{
 		ctx: ctx,
+		tx:  tx,
 	}
 }

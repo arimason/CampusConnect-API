@@ -4,6 +4,7 @@ import (
 	authappl "campusconnect-api/internal/appl/auth"
 	"campusconnect-api/internal/domain/auth"
 	"campusconnect-api/internal/domain/person"
+	contxt "campusconnect-api/internal/infra/context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -57,6 +58,7 @@ func decodeCreateAuth(r *http.Request) (*createAuthReq, error) {
 // @Router /pub/user [post]
 // utilizo as regras de negócio do appl e preparo o response de acordo
 func CreateAuthHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>@")
 	// caso tivesse um id no formato uuid no path: Param id path string true "product ID" Format(uuid)
 	defer r.Body.Close()
 	req, err := decodeCreateAuth(r)
@@ -67,13 +69,18 @@ func CreateAuthHandler(w http.ResponseWriter, r *http.Request) {
 	// Validando os campos usando o pacote validator
 	validate := validator.New()
 	err = validate.Struct(req)
-	fmt.Println("nil", err)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	// iniciando transação
+	tx, err := contxt.GetDbConn(r.Context())
+	if err != nil {
+		responseError(w, http.StatusInternalServerError, ErrDecodeReqBody, err.Error())
+		return
+	}
 	// importandos o serviço
-	appl := authappl.NewAuthApplication(r.Context())
+	appl := authappl.NewAuthApplication(r.Context(), tx)
 	// criando entidade
 	authEnt := &auth.Entity{
 		Name:       req.Name,
@@ -81,15 +88,20 @@ func CreateAuthHandler(w http.ResponseWriter, r *http.Request) {
 		Password:   req.Password,
 		Permission: auth.Permission[req.Permission],
 	}
-	personEnt := person.Entity{
+	personEnt := &person.Entity{
 		CourseID:  req.CourseID,
 		FirstName: req.FirstName,
 		LastName:  req.LastName,
 	}
 	// envio os dados de criação do usuário para o appl
-	err = appl.Create(authEnt, &personEnt)
+	err = appl.Create(authEnt, personEnt)
 	if err != nil {
 		responseError(w, http.StatusBadRequest, ErrCreateEnt, err.Error())
+		return
+	}
+	err = tx.Commit()
+	if err != nil {
+		responseError(w, http.StatusBadRequest, "erro ao encerrar tx", err.Error())
 		return
 	}
 	// status 201
@@ -110,7 +122,13 @@ type findByEmailResp struct {
 
 // realizo a consulta no appl para retornar os dados da requisição
 func FindByEmailHandler(w http.ResponseWriter, r *http.Request) {
-	appl := authappl.NewAuthApplication(r.Context())
+	// iniciando transação
+	tx, err := contxt.GetDbConn(r.Context())
+	if err != nil {
+		responseError(w, http.StatusInternalServerError, ErrDecodeReqBody, err.Error())
+		return
+	}
+	appl := authappl.NewAuthApplication(r.Context(), tx)
 	ent, err := appl.FindByEmail()
 	if err != nil {
 		responseError(w, http.StatusBadRequest, ErrFind, err.Error())
@@ -177,8 +195,14 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		responseError(w, http.StatusBadRequest, "erro ao decodificar o body da requisição", err.Error())
 		return
 	}
+	// iniciando transação
+	tx, err := contxt.GetDbConn(r.Context())
+	if err != nil {
+		responseError(w, http.StatusInternalServerError, ErrDecodeReqBody, err.Error())
+		return
+	}
 	// importo o appl e passo contexto
-	appl := authappl.NewAuthApplication(r.Context())
+	appl := authappl.NewAuthApplication(r.Context(), tx)
 	token, err := appl.Login(req.EmailOrName, req.Password)
 	if err != nil {
 		responseError(w, http.StatusBadRequest, "erro ao realizar login", err.Error())
@@ -192,6 +216,11 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	// status code
 	w.WriteHeader(http.StatusOK)
+	err = tx.Commit()
+	if err != nil {
+		responseError(w, http.StatusBadRequest, "erro ao encerrar tx", err.Error())
+		return
+	}
 	// realizo o encode para o ResponseWriter
 	err = json.NewEncoder(w).Encode(&resp)
 	if err != nil {

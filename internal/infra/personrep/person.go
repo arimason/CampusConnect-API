@@ -60,6 +60,7 @@ func (r *personRepositoryImpl) Store(e *person.Entity) error {
 		) VALUES ($1, $2, $3, $4, $5)
 	`
 	_, err := r.Tx.Exec(sqlStmt, e.ID, e.UserID, e.FirstName, e.LastName, e.CourseID)
+	fmt.Println(e.UserID, err)
 	if err != nil {
 		return fmt.Errorf("falha ao executar SQL: %w", err)
 	}
