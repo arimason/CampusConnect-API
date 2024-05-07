@@ -39,7 +39,7 @@ Armazena informações pessoais vinculadas aos usuários.
 | Coluna        | Tipo             | Descrição                                           |
 | ------------- | ---------------- | --------------------------------------------------- |
 | id            | VARCHAR(36)      | Identificador único das informações pessoais        |
-| person_id       | VARCHAR(36)      | Identificador único da pessoa vinculado            |
+| user_id       | VARCHAR(36)      | Identificador único do usuário vinculado            |
 | course_id     | VARCHAR(36)      | Identificador único do curso vinculado              |
 | first_name    | VARCHAR(50)      | Primeiro nome do pessoa                            |
 | last_name     | VARCHAR(50)      | Sobrenome do pessoa                                |
@@ -48,7 +48,7 @@ Armazena informações pessoais vinculadas aos usuários.
 | deleted_at    | TIMESTAMP         | Data e hora da exclusão (marcada)                   |
 
 *Restrições de chave estrangeira:*
-- `fk_tb_person_person`: Referencia `tb_person` através de `person_id`.
+- `fk_tb_person_person`: Referencia `tb_user` através de `user_id`.
 - `fk_tb_person_course`: Referencia `tb_course` através de `course_id`.
 
 ---
