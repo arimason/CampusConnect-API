@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-chi/jwtauth v1.2.0
+	github.com/go-playground/validator/v10 v10.16.0
 	github.com/google/uuid v1.4.0
 	github.com/gorilla/mux v1.8.1
 	github.com/lib/pq v1.10.9
@@ -27,7 +28,6 @@ require (
 	github.com/go-openapi/swag v0.22.4 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.16.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
@@ -44,7 +44,6 @@ require (
 )
 
 require (
-	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/goccy/go-json v0.9.11 // indirect
 	github.com/golang-migrate/migrate v3.5.4+incompatible
 	github.com/lestrrat-go/backoff/v2 v2.0.7 // indirect

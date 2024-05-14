@@ -10,16 +10,16 @@ import (
 
 // definindo configurações para o banco de dados e webServer
 type config struct {
-	DBDriver      string           `yaml:"DB_DRIVER"`
-	DBHost        string           `yaml:"DB_HOST"`
-	DBPort        int              `yaml:"DB_PORT"`
-	DBUser        string           `yaml:"DB_USER"`
-	DBPassword    string           `yaml:"DB_PASSWORD"`
-	DBName        string           `yaml:"DB_NAME"`
-	WebServerPort string           `yaml:"WEB_SERVER_PORT"`
-	JWTSecret     string           `yaml:"JWT_SECRET"`
-	JWTExperesIn  int              `yaml:"JWT_EXPERESIN"`
-	TokenAuth     *jwtauth.JWTAuth `yaml:"-"`
+	// WebServerPort string           `yaml:"WEB_SERVER_PORT"`
+	DBDriver     string           `yaml:"DB_DRIVER"`
+	DBHost       string           `yaml:"DB_HOST"`
+	DBPort       int              `yaml:"DB_PORT"`
+	DBUser       string           `yaml:"DB_USER"`
+	DBPassword   string           `yaml:"DB_PASSWORD"`
+	DBName       string           `yaml:"DB_NAME"`
+	JWTSecret    string           `yaml:"JWT_SECRET"`
+	JWTExperesIn int              `yaml:"JWT_EXPERESIN"`
+	TokenAuth    *jwtauth.JWTAuth `yaml:"-"`
 }
 
 // // funçao é lida antes do método main

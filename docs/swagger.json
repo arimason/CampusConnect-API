@@ -7,7 +7,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "134.65.242.39:18181",
+    "host": "localhost:18181",
     "basePath": "/",
     "paths": {
         "/priv/user": {

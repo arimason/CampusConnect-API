@@ -1,4 +1,4 @@
-# Ordem Sugerida para Leitura - Arquiteto de Software Pleno
+# Ordem Sugerida para Leitura - Arquiteto de Software
 
 1. **Código Limpo: Habilidades Práticas do Agile Software**
    - Autor: Robert C. Martin

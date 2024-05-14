@@ -53,7 +53,6 @@ func decodeCreateAuth(r *http.Request) (*createAuthReq, error) {
 // @Router /pub/user [post]
 // utilizo as regras de negócio do appl e preparo o response de acordo
 func CreateAuthHandler(w http.ResponseWriter, r *http.Request) {
-	// caso tivesse um id no formato uuid no path: Param id path string true "product ID" Format(uuid)
 	defer r.Body.Close()
 	req, err := decodeCreateAuth(r)
 	if err != nil {

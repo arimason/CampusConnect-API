@@ -313,7 +313,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "134.65.242.39:18181",
+	Host:             "localhost:18181",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Campus Connect API",

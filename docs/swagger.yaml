@@ -72,7 +72,7 @@ definitions:
         description: token utilizado para autenticacao
         type: string
     type: object
-host: 134.65.242.39:18181
+host: localhost:18181
 info:
   contact: {}
   description: API for university
